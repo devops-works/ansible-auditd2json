@@ -1,0 +1,16 @@
+---
+- name: Checks if auditd2json is already present
+  stat:
+    path: /usr/local/bin/auditd2json
+  register: __auditd2json
+  tags:
+    - always
+
+- include_tasks:
+    file: auditd2json.yml
+    apply:
+      tags:
+        - auditd2json
+  when: __auditd2json is defined and (not __auditd2json.stat.exists or auditd2json_force_install)
+  tags:
+    - always
