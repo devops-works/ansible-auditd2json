@@ -1,27 +1,27 @@
 ---
 - name: Finds latest auditd2json version
-  uri:
+  ansible.builtin.uri:
     url: https://gitlab.com/api/v4/projects/71149402/releases
     status_code:
       - 200
   register: __auditd2json_repo_info
   check_mode: no
 
-- set_fact:
+- ansible.builtin.set_fact:
     __auditd2json_latest_version: '{{ __auditd2json_repo_info.json.0["name"] }}'
     __auditd2json_latest_num_version: '{{ __auditd2json_repo_info.json.0["name"] | regex_replace("v","") }}'
 
 - name: Fetches latest version
-  get_url:
+  ansible.builtin.get_url:
     url: https://gitlab.com/api/v4/projects/71149402/packages/generic/auditd2json/{{ __auditd2json_latest_num_version }}/auditd2json-linux-amd64-{{ __auditd2json_latest_version }}.gz
     dest: /tmp/auditd2json.gz
 
 - name: Fetch & unarchive auditd2json
   # can not use unachive, does not support gz
-  shell: gunzip -cd /tmp/auditd2json.gz > /usr/local/bin/auditd2json && chmod 755 /usr/local/bin/auditd2json
+  ansible.builtin.shell: gunzip -cd /tmp/auditd2json.gz > /usr/local/bin/auditd2json && chmod 755 /usr/local/bin/auditd2json
 
 - name: Add auditd plugin config
-  ansible.builtin.get_uri:
+  ansible.builtin.get_url:
     url: https://gitlab.com/devopsworks/tools/auditd2json/-/raw/master/auditd2json.plugin.conf?ref_type=heads
     dest: /etc/audit/plugins.d/auditd2json.conf
     owner: root
@@ -29,7 +29,7 @@
     mode: 0640
 
 - name: Add logrotate config
-  ansible.builtin.get_uri:
+  ansible.builtin.get_url:
     url: https://gitlab.com/devopsworks/tools/auditd2json/-/raw/master/auditd2json.logrotate.conf?ref_type=heads
     dest: /etc/logrotate.d/auditd2json
     owner: root

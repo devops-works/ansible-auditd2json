@@ -1,13 +1,13 @@
 ---
 - name: Checks if auditd2json is already present
-  stat:
+  ansible.builtin.stat:
     path: /usr/local/bin/auditd2json
   register: __auditd2json
   tags:
     - always
 
 - include_tasks:
-    file: auditd2json.yml
+    ansible.builtin.file: auditd2json.yml
     apply:
       tags:
         - auditd2json
