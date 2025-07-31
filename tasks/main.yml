@@ -7,7 +7,7 @@
     - always
 
 - include_tasks:
-    ansible.builtin.file: auditd2json.yml
+    file: auditd2json.yml
     apply:
       tags:
         - auditd2json
